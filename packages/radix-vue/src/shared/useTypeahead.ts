@@ -1,7 +1,7 @@
 import { refAutoReset } from '@vueuse/shared'
 import type { Ref } from 'vue'
 
-export function useTypeahead(collections?: Ref<HTMLElement[]>) {
+export function useTypeahead(collections?: Ref<HTMLElement[]>, textNodes?: Ref<HTMLElement[]>) {
   // Reset `search` 1 second after it was last updated
   const search = refAutoReset('', 1000)
 
@@ -10,7 +10,7 @@ export function useTypeahead(collections?: Ref<HTMLElement[]>) {
       return
 
     search.value = search.value + key
-    const items = collections?.value ?? fallback!
+    const items = textNodes?.value ?? fallback!
     const currentItem = document.activeElement
     const currentMatch
       = items.find(item => item === currentItem)?.textContent?.trim() ?? ''
@@ -21,8 +21,13 @@ export function useTypeahead(collections?: Ref<HTMLElement[]>) {
       item => item.textContent?.trim() === nextMatch,
     )
 
-    if (newItem)
-      (newItem as HTMLElement).focus()
+    if (newItem) {
+      const newItemIndex = items.indexOf(newItem)
+      console.log(collections?.value)
+      if (collections?.value && newItemIndex >= 0) {
+        (collections.value[newItemIndex] as HTMLElement).focus()
+      }
+    }
     return newItem
   }
 

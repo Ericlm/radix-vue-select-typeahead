@@ -91,6 +91,9 @@ const POSITION = ['item-aligned', 'popper'] as const
                       >
                         <Icon icon="radix-icons:check" />
                       </SelectItemIndicator>
+
+                      ✨
+
                       <SelectItemText>
                         {{ option }}
                       </SelectItemText>

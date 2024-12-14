@@ -109,8 +109,9 @@ const { createCollection } = useCollection()
 const content = ref<HTMLElement>()
 useHideOthers(content)
 
-const collectionItems = createCollection(content)
-const { search, handleTypeaheadSearch } = useTypeahead(collectionItems)
+const collectionItems = ref<HTMLElement[]>([])
+const itemTextCollectionItems = ref<HTMLElement[]>([])
+const { search, handleTypeaheadSearch } = useTypeahead(collectionItems, itemTextCollectionItems)
 
 const viewport = ref<HTMLElement>()
 const selectedItem = ref<HTMLElement>()
@@ -221,6 +222,9 @@ provideSelectContentContext({
     viewport.value = node
   },
   itemRefCallback: (node, value, disabled) => {
+    if (node)
+      collectionItems.value.push(node)
+
     const isFirstValidItem = !firstValidItemFoundRef.value && !disabled
     const isSelectedItem
       = rootContext.modelValue?.value !== undefined
@@ -243,6 +247,9 @@ provideSelectContentContext({
       && rootContext.modelValue?.value === value
     if (isSelectedItem || isFirstValidItem)
       selectedItemText.value = node
+
+    if (node)
+      itemTextCollectionItems.value.push(node)
   },
   focusSelectedItem,
   position: props.position,
